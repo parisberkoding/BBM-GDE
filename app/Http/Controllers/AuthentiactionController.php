@@ -107,12 +107,12 @@ class AuthentiactionController extends Controller
             // return "piw dashboard requester";
             return redirect()->route('requester-index')->with('success', 'Login Berhasil, Selamat datang ' . Auth::user()->nama_lengkap . '.');
         } elseif ($user->role === 'admin') {
-            return redirect->route('admin.dashboard')->with('success', 'Login Berhasil, Selamat datang ' . Auth::user()->nama_lengkap . '.');
+            return redirect()->route('admin-dashboard')->with('success', 'Login Berhasil, Selamat datang ' . Auth::user()->nama_lengkap . '.');
         } elseif ($user->role === 'superadmin') {
-            return redirect()->route('superadmin.dashboard')
+            return redirect()->route('superadmin-dashboard')
                 ->with('success', 'Selamat datang, ' . Auth::user->nama_lengkap . '!');
         } elseif ($user->role === 'manager') {
-            return redirect()->route('manager.dashboard')
+            return redirect()->route('manager-dashboard')
                 ->with('success', 'Selamat datang, ' . Auth::user->nama_lengkap . '!');
         } else {
             return redirect()->intended('/home')
