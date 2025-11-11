@@ -33,7 +33,7 @@ class AuthentiactionController extends Controller
         // Rate limiting untuk mencegah brute force attack
         $throttleKey = Str::lower($request->input('username')) . '|' . $request->ip();
         
-        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+        if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
             $seconds = RateLimiter::availableIn($throttleKey);
             return back()->withErrors([
                 'username' => "Terlalu banyak percobaan login. Silakan coba lagi dalam {$seconds} detik."
@@ -42,12 +42,12 @@ class AuthentiactionController extends Controller
 
         // Validasi input dengan Laravel Validator (mencegah XSS & SQL Injection)
         $validated = $request->validate([
-            'username' => 'required|string|max:255',
-            'password' => 'required|string|min:6|max:255'
+            'username' => 'required|string|max:30',
+            'password' => 'required|string|min:5|max:25'
         ], [
             'username.required' => 'Username harus diisi.',
             'password.required' => 'Password harus diisi.',
-            'password.min' => 'Password minimal 6 karakter.'
+            'password.min' => 'Password minimal 5 karakter.'
         ]);
 
         // Sanitasi input (Laravel sudah melakukan escape otomatis di Eloquent)
@@ -104,19 +104,16 @@ class AuthentiactionController extends Controller
     {
         // Sesuaikan dengan role di sistem Anda
         if ($user->role === 'requester') {
-            return "piw dashboard requester";
+            // return "piw dashboard requester";
+            return redirect()->route('requester-index')->with('success', 'Login Berhasil, Selamat datang ' . Auth::user()->nama_lengkap . '.');
         } elseif ($user->role === 'admin') {
-            // return redirect()->intended('/dashboard')
-            //     ->with('success', 'Selamat datang, ' . $user->name . '!');
-            return "piw dashboard admin";
+            return redirect->route('admin.dashboard')->with('success', 'Login Berhasil, Selamat datang ' . Auth::user()->nama_lengkap . '.');
         } elseif ($user->role === 'superadmin') {
-            // return redirect()->intended('/dashboard')
-            //     ->with('success', 'Selamat datang, ' . $user->name . '!');
-            return "piw dashboard superadmin";
+            return redirect()->route('superadmin.dashboard')
+                ->with('success', 'Selamat datang, ' . Auth::user->nama_lengkap . '!');
         } elseif ($user->role === 'manager') {
-            // return redirect()->intended('/dashboard')
-            //     ->with('success', 'Selamat datang, ' . $user->name . '!');
-            return "piw dashboard manager";
+            return redirect()->route('manager.dashboard')
+                ->with('success', 'Selamat datang, ' . Auth::user->nama_lengkap . '!');
         } else {
             return redirect()->intended('/home')
                 ->with('success', 'Selamat datang, ' . $user->name . '!');
