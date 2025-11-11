@@ -19,21 +19,10 @@
   <link href="{{ asset('DashboardTemplates/assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
   <link href="{{ asset('DashboardTemplates/assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
   <link href="{{asset('DashboardTemplates/assets/vendor/boxicons/css/boxicons.min.css')}}" rel="stylesheet">
-  {{-- <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
-  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet"> --}}
-  {{-- <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet"> --}}
   <link href="{{ asset('DashboardTemplates/assets/vendor/simple-datatables/style.css') }}" rel="stylesheet">
 
   <!-- Template Main CSS File -->
   <link href="{{ asset('DashboardTemplates/assets/css/style.css') }}" rel="stylesheet">
-
-  <!-- =======================================================
-  * Template Name: NiceAdmin
-  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-  * Updated: Apr 20 2024 with Bootstrap v5.3.3
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
 
 <body>
@@ -50,22 +39,47 @@
                    
                 </div><!-- End Logo -->
 
+                <!-- Alert Messages untuk error umum dan success -->
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+        <!-- End Alert Messages -->
+
                 <div class="card mb-3">
                     <div class="card-body">
 
                   <div class="pt-4 pb-2">
-                    <img src="{{ asset('DashboardTemplates/assets/img/geodipa-logo.png') }}" class="d-block mx-auto" style="max-width: 25%;min-width:15%;">
+                    <img src="{{ asset('DashboardTemplates/assets/img/geodipa-logo.png') }}" class="d-block mx-auto" style="max-width: 35%;min-width:18%;">
                     <h5 class="card-title text-center pb-0 fs-4">Sistem Permohonan BBM </h5>
                     <p class="text-center small">PT. Geo Dipa Energi (Persero) Unit Patuha</p>
                 </div>
 
-                  <form action="{{ route('login-process') }}" class="row g-3 needs-validation" novalidate method="POST">
+                  <form action="{{ route('login-process') }}" class="row g-3" method="POST">
                     @csrf
                     <div class="col-12">
                       <div class="input-group has-validation">
                         <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-person"></i></span>
-                        <input type="text" name="username" class="form-control" id="yourEmail" required placeholder="Masukkan Username">
-                        <div class="invalid-feedback">username anda salah.</div>
+                        <input type="text" 
+                               name="username" 
+                               class="form-control @error('username') is-invalid @enderror" 
+                               id="yourUsername" 
+                               placeholder="Masukkan Username"
+                               value="{{ old('username') }}">
+                        @error('username')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                       </div>
                     </div>
 
@@ -74,8 +88,14 @@
                             <span class="input-group-text" id="inputGroupPrepend">
                                 <i class="bi bi-lock"></i>
                             </span>
-                            <input type="password" name="password" class="form-control" id="yourPassword" required placeholder="Masukkan Password">
-                            <div class="invalid-feedback">password anda salah.</div>
+                            <input type="password" 
+                                   name="password" 
+                                   class="form-control @error('password') is-invalid @enderror" 
+                                   id="yourPassword" 
+                                   placeholder="Masukkan Password">
+                            @error('password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
 
@@ -102,10 +122,6 @@
               </div>
 
               <div class="credits">
-                <!-- All the links in the footer should remain intact. -->
-                <!-- You can delete the links only if you purchased the pro version. -->
-                <!-- Licensing information: https://bootstrapmade.com/license/ -->
-                <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
                 {{-- Developed by <a href="https://github.com/FarisIftikharAlfarisi"><span>Faris Iftikhar Alfarisi</span></a> --}}
               </div>
 
@@ -125,9 +141,7 @@
    <script src="{{ asset('DashboardTemplates/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
    <script src="{{ asset('DashboardTemplates/assets/vendor/chart.js/chart.umd.js') }}"></script>
    <script src="{{ asset('DashboardTemplates/assets/vendor/echarts/echarts.min.js') }}"></script>
-   {{-- <script src="assets/vendor/quill/quill.js"></script> --}}
    <script src="{{ asset('DashboardTemplates/assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
-   {{-- <script src="assets/vendor/tinymce/tinymce.min.js"></script> --}}
    <script src="{{ asset('DashboardTemplates/assets/vendor/php-email-form/validate.js') }}"></script>
 
    <!-- Template Main JS File -->
@@ -135,16 +149,12 @@
    <script>
     function togglePassword() {
         var passwordField = document.getElementById("yourPassword");
-        var toggleIcon = document.getElementById("toggleIcon");
+        var checkbox = document.getElementById("showPassword");
 
-        if (passwordField.type === "password") {
+        if (checkbox.checked) {
             passwordField.type = "text";
-            toggleIcon.classList.remove("bi-eye");
-            toggleIcon.classList.add("bi-eye-slash");
         } else {
             passwordField.type = "password";
-            toggleIcon.classList.remove("bi-eye-slash");
-            toggleIcon.classList.add("bi-eye");
         }
     }
     </script>
