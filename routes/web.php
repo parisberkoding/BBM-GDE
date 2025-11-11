@@ -18,28 +18,26 @@ Route::middleware(['auth', 'role:requester,admin,superadmin,manager'])->group(fu
 
 
 Route::middleware(['auth', 'role:requester'])->group(function () {
-    Route::get('/requester/view-request-bbm', function () {
-        $title = "View Request BBM";
-        return view('requester.view_request_bbm', compact('title'));
-    })->name('requester-index');
+    Route::get('/requester/view-request-bbm',[])->name('requester-index');
+
 
 
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/view-request-bbm', function () {
+    Route::get('/admin/dashboard', function () {
         $title = "View Request BBM";
         return view('admin.index', compact('title'));
-    })->name('admin.view-request-bbm');
+    })->name('admin-dashboard');
 
 
 });
 
 Route::middleware(['auth', 'role:superadmin'])->group(function () {
-    Route::get('/superadmin/view-request-bbm', function () {
+    Route::get('/superadmin/dashboard', function () {
         $title = "View Request BBM";
         return view('superadmin.index', compact('title'));
-    })->name('superadmin.view-request-bbm');
+    })->name('superadmin-dashboard');
 
 
 });
@@ -48,7 +46,7 @@ Route::middleware(['auth', 'role:manager'])->group(function () {
     Route::get('/manager/view-request-bbm', function () {
         $title = "View Request BBM";
         return view('manager.index', compact('title'));
-    })->name('manager.view-request-bbm');
+    })->name('manager-dashboard');
 
 
 });
