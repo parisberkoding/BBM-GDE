@@ -259,7 +259,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($history as $item)
+                                {{-- @forelse($history as $item)
                                 <tr>
                                     <td><code>{{ $item->request_id }}</code></td>
                                     <td>{{ $item->created_at->format('d M Y H:i') }}</td>
@@ -291,7 +291,7 @@
                                 <tr>
                                     <td colspan="7" class="text-center text-muted">Belum ada riwayat permohonan</td>
                                 </tr>
-                                @endforelse
+                                @endforelse --}}
                             </tbody>
                         </table>
                     </div>

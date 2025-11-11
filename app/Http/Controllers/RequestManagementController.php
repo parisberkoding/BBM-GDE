@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\VehicleAndToolsConsumers;
 
 class RequestManagementController extends Controller
 {
@@ -29,7 +30,15 @@ class RequestManagementController extends Controller
         $approvedCount = 3;
         $rejectedCount = 4;
         $totalRequests = 10;
-        return view('requester.view_request_bbm', compact('title', 'activeRequests','pendingCount','approvedCount','rejectedCount','totalRequests'));
+        $vehicles = VehicleAndToolsConsumers::all();
+
+
+       $gasolineTypes = [
+            (object)['name' => 'Pertamax'],
+            (object)['name' => 'Pertamina Dex'],
+        ];
+
+        return view('requester.view_request_bbm', compact('title', 'activeRequests','pendingCount','approvedCount','rejectedCount','totalRequests', 'vehicles', 'gasolineTypes'));
     }
 
     public function requester_create(Request $request)
