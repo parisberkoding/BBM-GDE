@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthentiactionController;
+use App\Http\Controllers\RequestManagementController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,10 +19,9 @@ Route::middleware(['auth', 'role:requester,admin,superadmin,manager'])->group(fu
 
 
 Route::middleware(['auth', 'role:requester'])->group(function () {
-    Route::get('/requester/view-request-bbm',[])->name('requester-index');
-
-
-
+    Route::get('/requester/view-request-bbm',[RequestManagementController::class, 'requester_index'])->name('requester-index');
+    Route::post('/requester/create-request-bbm',[RequestManagementController::class, 'requester_create'])->name('requester-create');
+    route::get('/requester/bbm-history',[RequestManagementController::class, 'requester_history'])->name('requester-history');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
