@@ -32,7 +32,7 @@
     </div>
 
     <!-- Welcome Card -->
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-12">
             <div class="card info-card">
                 <div class="card-body">
@@ -41,10 +41,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Stats Cards -->
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-xxl-3 col-md-6">
             <div class="card info-card sales-card">
                 <div class="card-body">
@@ -54,7 +54,7 @@
                             <i class="bi bi-inbox"></i>
                         </div>
                         <div class="ps-3">
-                            <h6 id="availableSlots">{{ 5 - $activeRequests }}</h6>
+                            <h6>{{ 5 - $activeCount }}</h6>
                             <span class="text-muted small pt-1">dari 5 slot</span>
                         </div>
                     </div>
@@ -112,7 +112,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Form Permohonan BBM -->
     <div class="row">
@@ -122,13 +122,13 @@
                     <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Form Permohonan BBM Baru</h5>
                 </div>
                 <div class="card-body">
-                    @if($activeRequests >= 5)
+                    @if($activeCount >= 5)
                     <div class="alert alert-warning">
                         <i class="bi bi-exclamation-triangle"></i>
                         Slot permohonan Anda sudah penuh (5/5). Silakan selesaikan permohonan yang ada terlebih dahulu.
                     </div>
                     @else
-                    <form action="" method="POST" id="requestForm">
+                    <form action="{{ route('requester-create') }}" method="POST" id="requestForm">
                         @csrf
                         <div class="row">
                             <div class="col-md-4 mb-3">
@@ -138,7 +138,7 @@
                                     <option value="">Pilih Kendaraan/Alat</option>
                                     @foreach($vehicles as $vehicle)
                                     <option value="{{ $vehicle->id }}" {{ old('vehicle_id') == $vehicle->id ? 'selected' : '' }}>
-                                        {{ $vehicle->plat_nomer }} - {{ $vehicle->merk }} ({{ $vehicle->jenis }})
+                                        {{ $vehicle->consumerial_code }} - {{ $vehicle->consumerial_name }} ({{ $vehicle->consumerial_type }})
                                     </option>
                                     @endforeach
                                 </select>
@@ -153,8 +153,8 @@
                                         id="gasoline_type" name="gasoline_type" required>
                                     <option value="">Pilih Jenis BBM</option>
                                     @foreach($gasolineTypes as $gasoline)
-                                    <option value="{{ $gasoline->name }}" {{ old('gasoline_type') == $gasoline->name ? 'selected' : '' }}>
-                                        {{ $gasoline->name }}
+                                    <option value="{{ $gasoline->gasoline_name }}" {{ old('gasoline_type') == $gasoline->gasoline_name ? 'selected' : '' }}>
+                                        {{ $gasoline->gasoline_name }}
                                     </option>
                                     @endforeach
                                 </select>
@@ -181,11 +181,11 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="driver_note" class="form-label">Catatan Driver (Opsional)</label>
-                            <textarea class="form-control @error('driver_note') is-invalid @enderror"
-                                      id="driver_note" name="driver_note" rows="3"
-                                      placeholder="Catatan tambahan...">{{ old('driver_note') }}</textarea>
-                            @error('driver_note')
+                            <label for="requester_notes" class="form-label">Catatan (Opsional)</label>
+                            <textarea class="form-control @error('requester_notes') is-invalid @enderror"
+                                      id="requester_notes" name="requester_notes" rows="3"
+                                      placeholder="Catatan tambahan...">{{ old('requester_notes') }}</textarea>
+                            @error('requester_notes')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -204,8 +204,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-grid-3x3-gap"></i> Slot Permohonan Aktif ({{ $activeRequests }}/5)</h5>
+                <div class="card-header"><h5 class="mb-0"><i class="bi bi-grid-3x3-gap"></i> Slot Permohonan Aktif ({{ $activeCount }}/5)</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -237,68 +236,20 @@
         </div>
     </div>
 
-    <!-- Riwayat Permohonan -->
-    <div class="row">
+    <!-- Quick Link to History -->
+    {{-- <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> Riwayat Permohonan</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover datatable">
-                            <thead>
-                                <tr>
-                                    <th>Kode Request</th>
-                                    <th>Tanggal</th>
-                                    <th>Kendaraan</th>
-                                    <th>Jenis BBM</th>
-                                    <th>Nominal</th>
-                                    <th>Status</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{-- @forelse($history as $item)
-                                <tr>
-                                    <td><code>{{ $item->request_id }}</code></td>
-                                    <td>{{ $item->created_at->format('d M Y H:i') }}</td>
-                                    <td>
-                                        {{ $item->vehicle->plat_nomer ?? 'N/A' }}<br>
-                                        <small class="text-muted">{{ $item->vehicle->jenis ?? '' }}</small>
-                                    </td>
-                                    <td><span class="badge bg-secondary">{{ $item->gasoline_type }}</span></td>
-                                    <td><strong>Rp {{ number_format($item->bill_payment, 0, ',', '.') }}</strong></td>
-                                    <td>
-                                        @if($item->status === 'pending')
-                                        <span class="badge bg-warning">Pending</span>
-                                        @elseif($item->status === 'approved')
-                                        <span class="badge bg-success">Approved</span>
-                                        @elseif($item->status === 'completed')
-                                        <span class="badge bg-info">Completed</span>
-                                        @elseif($item->status === 'rejected')
-                                        <span class="badge bg-danger">Rejected</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary"
-                                                onclick="showDetail('{{ $item->request_id }}')">
-                                            <i class="bi bi-eye"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="7" class="text-center text-muted">Belum ada riwayat permohonan</td>
-                                </tr>
-                                @endforelse --}}
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="card-body text-center">
+                    <h5>Lihat Riwayat Lengkap</h5>
+                    <p class="text-muted">Lihat semua riwayat permohonan BBM Anda</p>
+                    <a href="{{ route('requester-history') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-clock-history"></i> Lihat Riwayat
+                    </a>
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 </section>
 
 <style>
@@ -322,11 +273,4 @@
     color: white;
 }
 </style>
-
-<script>
-function showDetail(requestId) {
-    // Implementasi modal detail
-    alert('Detail untuk request: ' + requestId);
-}
-</script>
 @endsection

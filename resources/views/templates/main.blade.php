@@ -50,7 +50,7 @@
 
     @include('partials.navbar')
     @include('partials.sidebar')
-    
+
     <main id="main" class="main">
       @yield('content')
     </main><!-- End #main -->
@@ -73,6 +73,16 @@
 
   {{-- sweet alert --}}
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <!-- jsPDF for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Epson ePOS SDK for Thermal Printer -->
+    <script src="https://epson.github.io/ePOS_SDK/epos-dev.js"></script>
+
+    <!-- Custom Thermal Printer Scripts -->
+    {{-- <script src="{{ asset('js/thermal-printer.js') }}"></script> --}}
 
 
 </body>

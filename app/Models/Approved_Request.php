@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ApprovedRequest extends Model  // Ubah dari Approved_Request
+class Approved_Request extends Model  // Ubah dari Approved_Request
 {
     protected $table = 'approved_requests';  // Ubah dari approved__requests
 

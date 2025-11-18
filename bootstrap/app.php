@@ -14,7 +14,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
      ]);
+
+     $middleware->validateCsrfTokens(except: [
+            'api/*', // Exclude semua API routes dari CSRF
+            // atau spesifik:
+            'api/thermer-print'
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+
     })->create();

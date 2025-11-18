@@ -3,7 +3,26 @@
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
-      <li class="nav-item">
+      @if (Auth::user()->role === 'requester')
+        <li class="nav-heading">Permohonan</li>
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="{{ route('requester-index') }}">
+            <i class="bi bi-grid"></i>
+              <span>Permohonan Baru</span>
+            </a>
+        </li><!-- End Dashboard Nav -->
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="{{ route('requester-history') }}">
+            <i class="bi bi-grid"></i>
+              <span>Riwayat Permohonan</span>
+            </a>
+        </li><!-- End Dashboard Nav -->
+
+
+      @endif
+
+      {{-- <li class="nav-item">
         <a class="nav-link collapsed" href="index.html">
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
@@ -229,7 +248,7 @@
           <i class="bi bi-file-earmark"></i>
           <span>Blank</span>
         </a>
-      </li><!-- End Blank Page Nav -->
+      </li><!-- End Blank Page Nav --> --}}
 
     </ul>
 

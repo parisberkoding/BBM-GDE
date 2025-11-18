@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('approved__requests', function (Blueprint $table) {
+        Schema::create('approved_requests', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('permohonan_id');
             $table->foreign('permohonan_id')->references('id')->on('permohonans')->onDelete('cascade');
+
             $table->timestamp('approval_date')->useCurrent();
             $table->string('voucher_code')->unique();
             $table->datetime('valid_until');
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->string('status');
             $table->unsignedBigInteger('authorizer_id');
             $table->foreign('authorizer_id')->references('id')->on('users')->onDelete('restrict');
+
             $table->text('approval_notes')->nullable();
             $table->timestamps();
         });
