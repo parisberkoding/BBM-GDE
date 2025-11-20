@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthentiactionController;
 use App\Http\Controllers\RequestManagementController;
+use App\Http\Controllers\SuperadminController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -38,13 +39,71 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/approval/bulk-process', [RequestManagementController::class, 'admin_bulk_process'])->name('admin-bulk-process');
 });
 
+// Route::middleware(['auth', 'role:superadmin'])->group(function () {
+//     Route::get('/superadmin/dashboard', function () {
+//         $title = "View Request BBM";
+//         return view('superadmin.index', compact('title'));
+//     })->name('superadmin-dashboard');
+
+
+// });
+
 Route::middleware(['auth', 'role:superadmin'])->group(function () {
-    Route::get('/superadmin/dashboard', function () {
-        $title = "View Request BBM";
-        return view('superadmin.index', compact('title'));
-    })->name('superadmin-dashboard');
 
+    // Dashboard
+    Route::get('/sa/dashboard', [SuperadminController::class, 'index'])->name('superadmin-dashboard');
+    Route::get('/dashboard/stats', [SuperadminController::class, 'getDashboardStats'])->name('dashboard.stats');
+    Route::get('/dashboard/driver-stats', [SuperadminController::class, 'getDetailedDriverStats'])->name('dashboard.driver-stats');
 
+    // User Management
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('/', [SuperadminController::class, 'getAllUsers'])->name('index');
+        Route::post('/', [SuperadminController::class, 'storeUser'])->name('store');
+        Route::put('/{id}', [SuperadminController::class, 'updateUser'])->name('update');
+        Route::delete('/{id}', [SuperadminController::class, 'deleteUser'])->name('delete');
+        Route::post('/{id}/reset-password', [SuperadminController::class, 'resetPassword'])->name('reset-password');
+    });
+
+    // Vehicle Management
+    Route::prefix('vehicles')->name('vehicles.')->group(function () {
+        Route::get('/', [SuperadminController::class, 'getAllVehicles'])->name('index');
+        Route::post('/', [SuperadminController::class, 'storeVehicle'])->name('store');
+        Route::put('/{id}', [SuperadminController::class, 'updateVehicle'])->name('update');
+        Route::delete('/{id}', [SuperadminController::class, 'deleteVehicle'])->name('delete');
+    });
+
+    // Request Management
+    Route::prefix('requests')->name('requests.')->group(function () {
+        Route::get('/', [SuperadminController::class, 'getAllRequests'])->name('index');
+        Route::put('/{id}', [SuperadminController::class, 'updateRequest'])->name('update');
+        Route::delete('/{id}', [SuperadminController::class, 'deleteRequest'])->name('delete');
+    });
+
+    // Transaction Proof Management
+    Route::prefix('proofs')->name('proofs.')->group(function () {
+        Route::get('/', [SuperadminController::class, 'getAllTransactionProofs'])->name('index');
+        Route::post('/{id}', [SuperadminController::class, 'updateTransactionProof'])->name('update');
+        Route::delete('/{id}', [SuperadminController::class, 'deleteTransactionProof'])->name('delete');
+    });
+
+    // Analytics
+    Route::prefix('analytics')->name('analytics.')->group(function () {
+        Route::get('/fuel-consumption', [SuperadminController::class, 'getVehicleFuelConsumption'])->name('fuel-consumption');
+        Route::get('/km-performance', [SuperadminController::class, 'getVehicleKmPerformance'])->name('km-performance');
+        Route::get('/pivot-table', [SuperadminController::class, 'getCompletePivotTable'])->name('pivot-table');
+        Route::get('/request-analysis', [SuperadminController::class, 'getRequestAnalysis'])->name('request-analysis');
+        Route::get('/latest-odo', [SuperadminController::class, 'getLatestOdoPerVehicle'])->name('latest-odo');
+        Route::get('/monthly-summary', [SuperadminController::class, 'getMonthlyReportSummary'])->name('monthly-summary');
+    });
+
+    // Activity Log
+    Route::get('/activity-log', [SuperadminController::class, 'getActivityLog'])->name('activity-log');
+
+    // Export
+    Route::prefix('export')->name('export.')->group(function () {
+        Route::post('/csv', [SuperadminController::class, 'exportCSV'])->name('csv');
+        Route::post('/pdf', [SuperadminController::class, 'exportPDF'])->name('pdf');
+    });
 });
 
 Route::middleware(['auth', 'role:manager'])->group(function () {

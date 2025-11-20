@@ -22,6 +22,29 @@
 
       @endif
 
+      @if (Auth::user()->role === "superadmin")
+          <li class="nav-item">
+          <a class="nav-link collapsed" href="">
+            <i class="bi bi-grid"></i>
+              <span>Dasboard Bisnis</span>
+            </a>
+        </li><!-- End Dashboard Nav -->
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="">
+            <i class="bi bi-grid"></i>
+              <span> Kendaraan </span>
+            </a>
+        </li><!-- End Dashboard Nav -->
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="">
+            <i class="bi bi-receipt-cutoff"></i>
+              <span>Permohonan & Laporan</span>
+            </a>
+        </li><!-- End Dashboard Nav -->
+      @endif
+
       {{-- <li class="nav-item">
         <a class="nav-link collapsed" href="index.html">
           <i class="bi bi-grid"></i>

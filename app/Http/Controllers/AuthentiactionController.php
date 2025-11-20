@@ -29,10 +29,10 @@ class AuthentiactionController extends Controller
     {
 
         // dd($request->all());
-        
+
         // Rate limiting untuk mencegah brute force attack
         $throttleKey = Str::lower($request->input('username')) . '|' . $request->ip();
-        
+
         if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
             $seconds = RateLimiter::availableIn($throttleKey);
             return back()->withErrors([
@@ -61,7 +61,7 @@ class AuthentiactionController extends Controller
         // Jika user tidak ditemukan
         if (!$user) {
             RateLimiter::hit($throttleKey, 60); // Tambah hit counter
-            
+
             return back()->withErrors([
                 'username' => 'Username tidak terdaftar dalam sistem.'
             ])->withInput($request->only('username'));
@@ -71,7 +71,7 @@ class AuthentiactionController extends Controller
         // Hash::check aman dari timing attack
         if (!Hash::check($password, $user->password)) {
             RateLimiter::hit($throttleKey, 60); // Tambah hit counter
-            
+
             return back()->withErrors([
                 'password' => 'Password yang Anda masukkan salah.'
             ])->withInput($request->only('username'));
@@ -110,10 +110,10 @@ class AuthentiactionController extends Controller
             return redirect()->route('admin-dashboard')->with('success', 'Login Berhasil, Selamat datang ' . Auth::user()->nama_lengkap . '.');
         } elseif ($user->role === 'superadmin') {
             return redirect()->route('superadmin-dashboard')
-                ->with('success', 'Selamat datang, ' . Auth::user->nama_lengkap . '!');
+                ->with('success', 'Selamat datang, ' . Auth::user()->nama_lengkap . '!');
         } elseif ($user->role === 'manager') {
             return redirect()->route('manager-dashboard')
-                ->with('success', 'Selamat datang, ' . Auth::user->nama_lengkap . '!');
+                ->with('success', 'Selamat datang, ' . Auth::user()->nama_lengkap . '!');
         } else {
             return redirect()->intended('/home')
                 ->with('success', 'Selamat datang, ' . $user->name . '!');
@@ -126,10 +126,10 @@ class AuthentiactionController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
-        
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
+
         return redirect()->route('login')
             ->with('success', 'Anda telah berhasil logout.');
     }
